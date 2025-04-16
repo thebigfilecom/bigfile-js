@@ -6,3 +6,4 @@
 /debug-cli/testfiles/**/*
 .idea
 yarn.lock
+bigfile-*.zip
