@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "skipLibCheck": true,
+    "outDir": "./dist/web/",
+    // "sourceMap": true,
+    "strict": true,
+    "target": "ES2022",
+    "moduleResolution": "node",
+    "module": "commonjs",
+    "baseUrl": "src/common",
+    "rootDirs": ["src/common", "src/web"],
+    "paths": {
+      "@crypto/node-driver": ["lib/crypto/webcrypto-driver"]
+    }
+  },
+  "include": ["src/modules.d.ts", "src/common", "src/web"]
+}

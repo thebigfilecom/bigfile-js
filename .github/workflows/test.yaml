@@ -1,0 +1,87 @@
+name: Test
+on: 
+  workflow_dispatch:
+  push: 
+    branches:
+      - master
+  pull_request:
+#     paths-ignore:
+#       - '**.md'
+
+jobs:
+  build:
+    name: Install deps ${{ matrix.os }}. Build only ubuntu
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: true
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "22"
+
+      - uses: actions/cache@v4
+        id: cache-node-modules
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: node_modules
+          key:  ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+
+      - name: Install dependencies
+        if: steps.cache-node-modules.outputs.cache-hit != 'true'
+        run: npm ci
+
+      - name: Build on ubuntu
+        if: matrix.os == 'ubuntu-latest'
+        run: npm run build
+      - name: Upload ubuntu build folders
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-artifact@main
+        with:
+          name: build artifacts
+          retention-days: 1
+          path: |
+            node/
+            web/
+            bundles/
+
+  test:
+    needs: build
+    name: ${{ matrix.os }} with node ${{ matrix.node-version }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: true
+      matrix:
+        node-version: [18, 20, 22]
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/download-artifact@main
+        with:
+          name: build artifacts
+      - name: Use nodejs ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - uses: actions/cache@v4
+        id: cache-node-modules
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: node_modules
+          key:  ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+
+      - name: test
+        run: npm test
