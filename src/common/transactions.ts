@@ -10,9 +10,9 @@ import Api from "./lib/api";
 import CryptoInterface, {
   SignatureOptions,
 } from "./lib/crypto/crypto-interface";
-import ArweaveError, { ArweaveErrorType, getError } from "./lib/error";
+import BigfileError, { BigfileErrorType, getError } from "./lib/error";
 import Transaction from "./lib/transaction";
-import * as ArweaveUtils from "./lib/utils";
+import * as BigfileUtils from "./lib/utils";
 import { JWKInterface } from "./lib/wallet";
 import {
   TransactionUploader,
@@ -97,14 +97,14 @@ export default class Transactions {
     }
 
     if (response.status == 404) {
-      throw new ArweaveError(ArweaveErrorType.TX_NOT_FOUND);
+      throw new BigfileError(BigfileErrorType.TX_NOT_FOUND);
     }
 
     if (response.status == 410) {
-      throw new ArweaveError(ArweaveErrorType.TX_FAILED);
+      throw new BigfileError(BigfileErrorType.TX_FAILED);
     }
 
-    throw new ArweaveError(ArweaveErrorType.TX_INVALID);
+    throw new BigfileError(BigfileErrorType.TX_INVALID);
   }
 
   public fromRaw(attributes: object): Transaction {
@@ -189,10 +189,10 @@ export default class Transactions {
       return data;
     }
     if (options && options.decode && options.string) {
-      return ArweaveUtils.bufferToString(data);
+      return BigfileUtils.bufferToString(data);
     }
     // Since decode wasn't requested, caller expects b64url encoded data.
-    return ArweaveUtils.bufferTob64Url(data);
+    return BigfileUtils.bufferTob64Url(data);
   }
 
   public async sign(
@@ -223,9 +223,9 @@ export default class Transactions {
       let id = await this.crypto.hash(rawSignature);
 
       transaction.setSignature({
-        id: ArweaveUtils.bufferTob64Url(id),
+        id: BigfileUtils.bufferTob64Url(id),
         owner: jwk.n,
-        signature: ArweaveUtils.bufferTob64Url(rawSignature),
+        signature: BigfileUtils.bufferTob64Url(rawSignature),
       });
     } else if (externalWallet) {
       try {
@@ -264,7 +264,7 @@ export default class Transactions {
       string: false,
     });
 
-    const expectedId = ArweaveUtils.bufferTob64Url(
+    const expectedId = BigfileUtils.bufferTob64Url(
       await this.crypto.hash(rawSignature)
     );
 

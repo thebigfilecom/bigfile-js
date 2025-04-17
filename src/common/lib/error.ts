@@ -1,18 +1,18 @@
 import { ResponseWithData } from "./api";
 
-export const enum ArweaveErrorType {
+export const enum BigfileErrorType {
   TX_NOT_FOUND = "TX_NOT_FOUND",
   TX_FAILED = "TX_FAILED",
   TX_INVALID = "TX_INVALID",
   BLOCK_NOT_FOUND = "BLOCK_NOT_FOUND",
 }
 
-export default class ArweaveError extends Error {
-  public readonly type: ArweaveErrorType;
+export default class BigfileError extends Error {
+  public readonly type: BigfileErrorType;
   public readonly response?: ResponseWithData;
 
   constructor(
-    type: ArweaveErrorType,
+    type: BigfileErrorType,
     optional: { message?: string; response?: ResponseWithData } = {}
   ) {
     if (optional.message) {
@@ -25,7 +25,7 @@ export default class ArweaveError extends Error {
     this.response = optional.response;
   }
 
-  public getType(): ArweaveErrorType {
+  public getType(): BigfileErrorType {
     return this.type;
   }
 }

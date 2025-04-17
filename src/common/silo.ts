@@ -1,7 +1,7 @@
 import Api from "./lib/api";
 import CryptoInterface from "./lib/crypto/crypto-interface";
 import Transactions from "./transactions";
-import * as ArweaveUtils from "./lib/utils";
+import * as BigfileUtils from "./lib/utils";
 import Transaction from "./lib/transaction";
 
 export default class Silo {
@@ -70,11 +70,11 @@ export default class Silo {
     const hashIterations = Math.pow(2, parseInt(parsed[2]));
 
     const digest = await this.hash(
-      ArweaveUtils.stringToBuffer(siloName),
+      BigfileUtils.stringToBuffer(siloName),
       hashIterations
     );
 
-    const accessKey = ArweaveUtils.bufferTob64(digest.slice(0, 15));
+    const accessKey = BigfileUtils.bufferTob64(digest.slice(0, 15));
 
     const encryptionkey = await this.hash(digest.slice(16, 31), 1);
 

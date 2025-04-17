@@ -7,7 +7,7 @@ import Transactions from "./transactions";
 import Wallets from "./wallets";
 import Transaction, { TransactionInterface, Tag } from "./lib/transaction";
 import { JWKInterface } from "./lib/wallet";
-import * as ArweaveUtils from "./lib/utils";
+import * as BigfileUtils from "./lib/utils";
 import Silo from "./silo";
 import Chunks from "./chunks";
 import Blocks from "./blocks";
@@ -51,7 +51,7 @@ export default class Bigfile {
 
   public static crypto: CryptoInterface = new CryptoDriver();
 
-  public static utils = ArweaveUtils;
+  public static utils = BigfileUtils;
 
   constructor(apiConfig: ApiConfig) {
     this.api = new Api(apiConfig);
@@ -70,7 +70,7 @@ export default class Bigfile {
   }
 
   /** @deprecated */
-  public get utils(): typeof ArweaveUtils {
+  public get utils(): typeof BigfileUtils {
     return Bigfile.utils;
   }
 
@@ -106,7 +106,7 @@ export default class Bigfile {
     }
 
     if (typeof attributes.data === "string") {
-      attributes.data = ArweaveUtils.stringToBuffer(attributes.data);
+      attributes.data = BigfileUtils.stringToBuffer(attributes.data);
     }
 
     if (attributes.data instanceof ArrayBuffer) {
@@ -181,13 +181,13 @@ export default class Bigfile {
 
     if (typeof attributes.data == "string") {
       const encrypted = await this.crypto.encrypt(
-        ArweaveUtils.stringToBuffer(attributes.data),
+        BigfileUtils.stringToBuffer(attributes.data),
         siloResource.getEncryptionKey()
       );
       transaction.reward = await this.transactions.getPrice(
         encrypted.byteLength
       );
-      transaction.data = ArweaveUtils.bufferTob64Url(encrypted);
+      transaction.data = BigfileUtils.bufferTob64Url(encrypted);
     }
 
     if (attributes.data instanceof Uint8Array) {
@@ -198,7 +198,7 @@ export default class Bigfile {
       transaction.reward = await this.transactions.getPrice(
         encrypted.byteLength
       );
-      transaction.data = ArweaveUtils.bufferTob64Url(encrypted);
+      transaction.data = BigfileUtils.bufferTob64Url(encrypted);
     }
 
     const siloTransaction = new Transaction(

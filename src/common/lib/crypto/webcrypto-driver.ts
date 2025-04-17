@@ -1,6 +1,6 @@
 import { JWKInterface, JWKPublicInterface } from "../wallet";
 import CryptoInterface, { SignatureOptions } from "./crypto-interface";
-import * as ArweaveUtils from "../utils";
+import * as BigfileUtils from "../utils";
 
 export default class WebCryptoDriver implements CryptoInterface {
   public readonly keyLength = 4096;
@@ -136,7 +136,7 @@ export default class WebCryptoDriver implements CryptoInterface {
       console.warn(
         "Transaction Verification Failed! \n",
         `Details: ${JSON.stringify(details, null, 2)} \n`,
-        "N.B. ArweaveJS is only guaranteed to verify txs created using ArweaveJS."
+        "N.B. BigfileJS is only guaranteed to verify txs created using BigfileJS."
       );
     }
 
@@ -200,7 +200,7 @@ export default class WebCryptoDriver implements CryptoInterface {
   ): Promise<Uint8Array> {
     const initialKey = await this.driver.importKey(
       "raw",
-      typeof key == "string" ? ArweaveUtils.stringToBuffer(key) : key,
+      typeof key == "string" ? BigfileUtils.stringToBuffer(key) : key,
       {
         name: "PBKDF2",
         length: 32,
@@ -209,7 +209,7 @@ export default class WebCryptoDriver implements CryptoInterface {
       ["deriveKey"]
     );
 
-    // const salt = ArweaveUtils.stringToBuffer("salt");
+    // const salt = BigfileUtils.stringToBuffer("salt");
     // create a random string for deriving the key
     // const salt = this.driver.randomBytes(16).toString('hex');
 
@@ -217,8 +217,8 @@ export default class WebCryptoDriver implements CryptoInterface {
       {
         name: "PBKDF2",
         salt: salt
-          ? ArweaveUtils.stringToBuffer(salt)
-          : ArweaveUtils.stringToBuffer("salt"),
+          ? BigfileUtils.stringToBuffer(salt)
+          : BigfileUtils.stringToBuffer("salt"),
         iterations: 100000,
         hash: "SHA-256",
       },
@@ -244,7 +244,7 @@ export default class WebCryptoDriver implements CryptoInterface {
       data
     );
 
-    return ArweaveUtils.concatBuffers([iv, encryptedData]);
+    return BigfileUtils.concatBuffers([iv, encryptedData]);
   }
 
   public async decrypt(
@@ -254,7 +254,7 @@ export default class WebCryptoDriver implements CryptoInterface {
   ): Promise<Uint8Array> {
     const initialKey = await this.driver.importKey(
       "raw",
-      typeof key == "string" ? ArweaveUtils.stringToBuffer(key) : key,
+      typeof key == "string" ? BigfileUtils.stringToBuffer(key) : key,
       {
         name: "PBKDF2",
         length: 32,
@@ -263,14 +263,14 @@ export default class WebCryptoDriver implements CryptoInterface {
       ["deriveKey"]
     );
 
-    // const salt = ArweaveUtils.stringToBuffer("pepper");
+    // const salt = BigfileUtils.stringToBuffer("pepper");
 
     const derivedkey = await this.driver.deriveKey(
       {
         name: "PBKDF2",
         salt: salt
-          ? ArweaveUtils.stringToBuffer(salt)
-          : ArweaveUtils.stringToBuffer("salt"),
+          ? BigfileUtils.stringToBuffer(salt)
+          : BigfileUtils.stringToBuffer("salt"),
         iterations: 100000,
         hash: "SHA-256",
       },
@@ -295,6 +295,6 @@ export default class WebCryptoDriver implements CryptoInterface {
     );
 
     // We're just using concat to convert from an array buffer to uint8array
-    return ArweaveUtils.concatBuffers([data]);
+    return BigfileUtils.concatBuffers([data]);
   }
 }
