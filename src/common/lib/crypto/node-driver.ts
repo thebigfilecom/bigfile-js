@@ -93,7 +93,7 @@ export default class NodeCryptoDriver implements CryptoInterface {
         console.warn(
           "Transaction Verification Failed! \n" +
             `Details: ${JSON.stringify(details, null, 2)} \n` +
-            "N.B. ArweaveJS is only guaranteed to verify txs created using ArweaveJS."
+            "N.B. BigfileJS is only guaranteed to verify txs created using BigfileJS."
         );
       }
 

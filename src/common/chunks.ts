@@ -1,6 +1,6 @@
 import Api from "./lib/api";
 import { getError } from "./lib/error";
-import * as ArweaveUtils from "./lib/utils";
+import * as BigfileUtils from "./lib/utils";
 
 export interface TransactionOffsetResponse {
   size: string;
@@ -36,7 +36,7 @@ export default class Chunks {
 
   async getChunkData(offset: string | number | BigInt): Promise<Uint8Array> {
     const chunk = await this.getChunk(offset);
-    const buf = ArweaveUtils.b64UrlToBuffer(chunk.chunk);
+    const buf = BigfileUtils.b64UrlToBuffer(chunk.chunk);
     return buf;
   }
 

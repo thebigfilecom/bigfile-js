@@ -31,7 +31,7 @@ describe("Blocks", function () {
 
   it("should get block's data by its indep_hash", async function () {
     // given
-    // https://arweave.net/block/hash/zbUPQFA4ybnd8h99KI9Iqh4mogXJibr0syEwuJPrFHhOhld7XBMOUDeXfsIGvYDp
+    // http://thebigfile.info:1984/block/hash/zbUPQFA4ybnd8h99KI9Iqh4mogXJibr0syEwuJPrFHhOhld7XBMOUDeXfsIGvYDp
     const blockIndepHash =
       "divAWs5eGznDv2gtqQD0ggNGUq3M3AFu8KIUpjs3jGtjEeKu0JctPb_St1wYDiMR";
     const expectedResult = require(`./fixtures/block_${blockIndepHash}.json`);
@@ -45,7 +45,7 @@ describe("Blocks", function () {
 
   it("should get block's data by its height", async function () {
     // given
-    // https://arweave.net/block/height/1000000
+    // http://thebigfile.info:1984/block/height/1000000
     const blockHeight = 45;
     const expectedResult = require(`./fixtures/block_height_${blockHeight}.json`);
 

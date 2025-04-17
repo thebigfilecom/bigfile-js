@@ -1,5 +1,5 @@
 import Api from "./lib/api";
-import ArweaveError, { ArweaveErrorType } from "./lib/error";
+import BigfileError, { BigfileErrorType } from "./lib/error";
 import { Tag } from "./lib/transaction";
 import "arconnect";
 import Network from "./network";
@@ -42,7 +42,7 @@ export default class Blocks {
       return response.data;
     } else {
       if (response.status === 404) {
-        throw new ArweaveError(ArweaveErrorType.BLOCK_NOT_FOUND);
+        throw new BigfileError(BigfileErrorType.BLOCK_NOT_FOUND);
       } else {
         throw new Error(`Error while loading block data: ${response}`);
       }
@@ -60,7 +60,7 @@ export default class Blocks {
       return response.data;
     } else {
       if (response.status === 404) {
-        throw new ArweaveError(ArweaveErrorType.BLOCK_NOT_FOUND);
+        throw new BigfileError(BigfileErrorType.BLOCK_NOT_FOUND);
       } else {
         throw new Error(`Error while loading block data: ${response}`);
       }

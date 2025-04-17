@@ -1,5 +1,5 @@
 import Transaction from "./transaction";
-import * as ArweaveUtils from "./utils";
+import * as BigfileUtils from "./utils";
 import Api from "./api";
 import { getError } from "./error";
 import { validatePath } from "./merkle";
@@ -141,7 +141,7 @@ export class TransactionUploader {
       parseInt(chunk.offset),
       0,
       parseInt(chunk.data_size),
-      ArweaveUtils.b64UrlToBuffer(chunk.data_path)
+      BigfileUtils.b64UrlToBuffer(chunk.data_path)
     );
     if (!chunkOk) {
       throw new Error(`Unable to validate chunk ${this.chunkIndex}`);

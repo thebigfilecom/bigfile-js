@@ -1,4 +1,4 @@
-import * as ArweaveUtils from "./utils";
+import * as BigfileUtils from "./utils";
 import deepHash from "./deepHash";
 import { Chunk, Proof, generateTransactionChunks } from "./merkle";
 
@@ -30,12 +30,12 @@ class BaseObject {
     // if decode option is not specificed.
     if (this[field] instanceof Uint8Array) {
       if (options && options.decode && options.string) {
-        return ArweaveUtils.bufferToString(this[field]);
+        return BigfileUtils.bufferToString(this[field]);
       }
       if (options && options.decode && !options.string) {
         return this[field];
       }
-      return ArweaveUtils.bufferTob64Url(this[field]);
+      return BigfileUtils.bufferTob64Url(this[field]);
     }
 
     if (this[field] instanceof Array) {
@@ -50,10 +50,10 @@ class BaseObject {
 
     if (options && options.decode == true) {
       if (options && options.string) {
-        return ArweaveUtils.b64UrlToString(this[field]);
+        return BigfileUtils.b64UrlToString(this[field]);
       }
 
-      return ArweaveUtils.b64UrlToBuffer(this[field]);
+      return BigfileUtils.b64UrlToBuffer(this[field]);
     }
 
     return this[field];
@@ -118,7 +118,7 @@ export default class Transaction
     // or where the data was filled in from /tx/data endpoint.
     // data will be b64url encoded, so decode it.
     if (typeof this.data === "string") {
-      this.data = ArweaveUtils.b64UrlToBuffer(this.data as string);
+      this.data = BigfileUtils.b64UrlToBuffer(this.data as string);
     }
 
     if (attributes.tags) {
@@ -133,8 +133,8 @@ export default class Transaction
   public addTag(name: string, value: string) {
     this.tags.push(
       new Tag(
-        ArweaveUtils.stringToB64Url(name),
-        ArweaveUtils.stringToB64Url(value)
+        BigfileUtils.stringToB64Url(name),
+        BigfileUtils.stringToB64Url(value)
       )
     );
   }
@@ -148,7 +148,7 @@ export default class Transaction
       tags: this.tags,
       target: this.target,
       quantity: this.quantity,
-      data: ArweaveUtils.bufferTob64Url(this.data),
+      data: BigfileUtils.bufferTob64Url(this.data),
       data_size: this.data_size,
       data_root: this.data_root,
       data_tree: this.data_tree,
@@ -190,7 +190,7 @@ export default class Transaction
 
     if (!this.chunks && data.byteLength > 0) {
       this.chunks = await generateTransactionChunks(data);
-      this.data_root = ArweaveUtils.bufferTob64Url(this.chunks.data_root);
+      this.data_root = BigfileUtils.bufferTob64Url(this.chunks.data_root);
     }
 
     if (!this.chunks && data.byteLength === 0) {
@@ -215,9 +215,9 @@ export default class Transaction
     return {
       data_root: this.data_root,
       data_size: this.data_size,
-      data_path: ArweaveUtils.bufferTob64Url(proof.proof),
+      data_path: BigfileUtils.bufferTob64Url(proof.proof),
       offset: proof.offset.toString(),
-      chunk: ArweaveUtils.bufferTob64Url(
+      chunk: BigfileUtils.bufferTob64Url(
         data.slice(chunk.minByteRange, chunk.maxByteRange)
       ),
     };
@@ -227,19 +227,19 @@ export default class Transaction
     switch (this.format) {
       case 1:
         let tags = this.tags.reduce((accumulator: Uint8Array, tag: Tag) => {
-          return ArweaveUtils.concatBuffers([
+          return BigfileUtils.concatBuffers([
             accumulator,
             tag.get("name", { decode: true, string: false }),
             tag.get("value", { decode: true, string: false }),
           ]);
         }, new Uint8Array());
 
-        return ArweaveUtils.concatBuffers([
+        return BigfileUtils.concatBuffers([
           this.get("owner", { decode: true, string: false }),
           this.get("target", { decode: true, string: false }),
           this.get("data", { decode: true, string: false }),
-          ArweaveUtils.stringToBuffer(this.quantity),
-          ArweaveUtils.stringToBuffer(this.reward),
+          BigfileUtils.stringToBuffer(this.quantity),
+          BigfileUtils.stringToBuffer(this.reward),
           this.get("last_tx", { decode: true, string: false }),
           tags,
         ]);
@@ -254,14 +254,14 @@ export default class Transaction
         ]);
 
         return await deepHash([
-          ArweaveUtils.stringToBuffer(this.format.toString()),
+          BigfileUtils.stringToBuffer(this.format.toString()),
           this.get("owner", { decode: true, string: false }),
           this.get("target", { decode: true, string: false }),
-          ArweaveUtils.stringToBuffer(this.quantity),
-          ArweaveUtils.stringToBuffer(this.reward),
+          BigfileUtils.stringToBuffer(this.quantity),
+          BigfileUtils.stringToBuffer(this.reward),
           this.get("last_tx", { decode: true, string: false }),
           tagList,
-          ArweaveUtils.stringToBuffer(this.data_size),
+          BigfileUtils.stringToBuffer(this.data_size),
           this.get("data_root", { decode: true, string: false }),
         ]);
       default:

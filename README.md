@@ -2,10 +2,6 @@
 
 Bigfile JS is the JavaScript/TypeScript SDK for interacting with the Bigfile network and uploading data to the permaweb. It works in latest browsers and Node JS.
 
-> **Notes:** 
-> 1. If you are planning to upload large batches of data transactions to the Bigfile network, it is strongly advised that you use [@DHA-Team/ArBundles](https://github.com/DHA-Team/arbundles) instead of transactions with Bigfile.js. You can read about bundles and their advantages on the [Arwiki](https://arwiki.wiki/#/en/bundles).
-> 2. When working with NodeJS a minimum version of 18+ is required. Bun/Deno not currently working.
-
 - [Bigfile JS](#bigfile-js)
   - [Installation](#installation)
     - [NPM](#npm)
@@ -420,7 +416,7 @@ alternatively
 ```js
 // example of tx being accepted and mined, but the network is missing the data
 const Bigfile = require("./node/index.js"); // assumed locally built nodejs target
-const ArweaveTransaction = require("./node/lib/transaction.js");
+const BigfileTransaction = require("./node/lib/transaction.js");
 const fs = require("fs");
 
 // initialize a gateway connection
@@ -450,7 +446,7 @@ let txHeaders = require("./txheaders.json");
 There is also an async iterator interface to chunk uploading, but this method means you'll need to ensure you are using a transpiler and polyfill for the asyncIterator symbol for some environments. (Safari on iOS in particular). This method takes the same arguments for uploading/resuming a transaction as `getUploader()` and just has a slightly shorter syntax:
 
 ```js
-for await (const uploader of arweave.transactions.upload(tx)) {
+for await (const uploader of bigfile.transactions.upload(tx)) {
   console.log(`${uploader.pctComplete}% Complete`);
 }
 // done.
@@ -478,10 +474,8 @@ _**N.B.** We strongly advise that you check the status and number of confirmatio
 
 #### Get a transaction
 
-Fetch a transaction from the connected arweave node. The data and tags are base64 encoded, these can be decoded using the built in helper methods.
+Fetch a transaction from the connected bigfile node. The data and tags are base64 encoded, these can be decoded using the built in helper methods.
 
-> **Update since v1.9.0**
-*Due to how the API has evolved over time and with larger transaction support, the `data` field is no longer _guaranteed_ to be returned from the network as part of the transaction json, therefore, it is not recommended that you use this function for fetching data anymore. You should update your applications to use [`bigfile.transactions.getData()`](#get-transaction-data) instead, this will handle small transactions, as well as the reassembling of chunks for larger ones, it can also benefit from gateway optimisations.*
 
 ```js
 const transaction = bigfile.transactions.get('hKMMPNh_emBf8v_at1tFzNYACisyMQNcKzeeE1QE9p8').then(transaction => {
